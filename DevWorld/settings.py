@@ -78,17 +78,14 @@ WSGI_APPLICATION = 'DevWorld.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'sql_server.pyodbc',
-		'NAME': 'DevWorld_Code',
-		'HOST': 'localhost',
-		'USER': 'sa',
-		'PASSWORD': 'qlfyd',
-		'PORT': '1433',
-		'OPTIONS': {
-			'driver': 'ODBC Driver 17 for SQL Server',
-		}
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'devworld',
+        'USER': 'jihan2',
+        'PASSWORD': 'sam990604',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
 }
 
 
