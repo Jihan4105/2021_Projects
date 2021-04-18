@@ -1,0 +1,2 @@
+model_checkpoint_path: "GreenOnion_saved.cpkt"
+all_model_checkpoint_paths: "GreenOnion_saved.cpkt"
