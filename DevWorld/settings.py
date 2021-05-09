@@ -27,7 +27,7 @@ SECRET_KEY = '2y*khv^n8*2hbms0if=0ro6!kl@w1b*sg$y(q@kx$w9ia(0ye0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'DevWorld.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'devworld',
-        'USER': 'jihan2',
-        'PASSWORD': 'sam990604',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'DevWorld',
+        'USER': 'wlgks6979',
+        'PASSWORD': 'sam031018',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
