@@ -1,0 +1,32 @@
+﻿.buttons_class {
+    margin: 0px 5px 0px 5px;
+}
+
+.searchspan {
+    font-size: 40px;
+    float: left;
+}
+
+#searchbar {
+    float: left;
+    width: 40%;
+    padding-top: 16px;
+}
+
+tr.colorchange:hover td {
+    background-color: #99ffff;
+    color: white;
+}
+
+select option[disabled]:first-child{
+    display: none;
+}
+
+.workarea {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.sub_title{
+    font-size: 28px;
+}
