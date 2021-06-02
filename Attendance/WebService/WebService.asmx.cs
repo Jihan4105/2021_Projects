@@ -49,6 +49,7 @@ namespace Attendance.WebService
             }
             json.Add("items", items);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -71,6 +72,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -94,6 +96,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -115,6 +118,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -142,6 +146,7 @@ namespace Attendance.WebService
             }
             json.Add("scheduleitems", scheduleitems);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -171,6 +176,7 @@ namespace Attendance.WebService
             }
             json.Add("scheduleitems", scheduleitems);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -194,6 +200,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -216,6 +223,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -238,6 +246,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
         [WebMethod]
         public void Att_List_Lookup(string classNo, string from_date, string until_date)
@@ -281,6 +290,7 @@ namespace Attendance.WebService
             }
             json.Add("att_list", att_list);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -304,6 +314,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -332,6 +343,7 @@ namespace Attendance.WebService
             }
             json.Add("stu_list", stu_list);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -354,6 +366,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -375,6 +388,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -412,6 +426,7 @@ namespace Attendance.WebService
             }
             json.Add("scheduleitems", scheduleitems);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
         [WebMethod]
         public void Lea_Delete(string stu_name,string classNo)
@@ -433,6 +448,7 @@ namespace Attendance.WebService
 
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
 
@@ -472,6 +488,7 @@ namespace Attendance.WebService
             }
             json.Add("status", status);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -500,6 +517,7 @@ namespace Attendance.WebService
             }
             json.Add("user_list", user_list);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -559,6 +577,7 @@ namespace Attendance.WebService
             json.Add("status", status);
             json.Add("items", jobj);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -597,6 +616,7 @@ namespace Attendance.WebService
             }
             json.Add("dashboard_item", dashboard_item);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
@@ -634,6 +654,7 @@ namespace Attendance.WebService
             }
             json.Add("upping_lecture", upping_lecture);
             Context.Response.Write(json.ToString());
+            con.Close();
         }
 
         [WebMethod]
