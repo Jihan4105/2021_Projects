@@ -22,7 +22,7 @@ $(function () {
         }
     });
     $("#sidenav_id").css("margin-top", $("#topnav_id").outerHeight());
-    /*Lec_Lookup_For_DashBoard()
+    Lec_Lookup_For_DashBoard()
         .done(function () {
             var deferred = $.Deferred();
             var obj = JSON.stringify(global_class_table);
@@ -45,7 +45,7 @@ $(function () {
         })
         .fail(function () {
 
-        })*/
+        })
 })();
 
 function Sidenav_Show_Hide() {

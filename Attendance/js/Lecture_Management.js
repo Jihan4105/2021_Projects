@@ -1,6 +1,7 @@
 ﻿var global_table = [];
 var deferred = $.Deferred();
 var global_arry = [];
+var global_oldclassNo;
 $.ajax({
     url: "./WebService/WebService.asmx/Lec_Lookup",
     data: {},
@@ -38,6 +39,8 @@ function Lec_Lookup() {
             deferred.resolve(result);
         },
         error: function (result) {
+            alert(result.status);
+            alert(result.message);
             deferred.reject();
         }
     });
@@ -45,7 +48,7 @@ function Lec_Lookup() {
 }
 
 function Lec_Delete_Button() {
-    var nom = document.getElementsByName("no");
+    var nom = document.getElementsByName("classNo");
     var arr = [];
     for (var i = 0, k = 0; i < nom.length; i++) {
         if (nom[i].checked == true) {
@@ -75,6 +78,7 @@ function Lec_Delete_Button() {
 }
 
 function Lec_Fix_Page_Load() {
+    global_oldclassNo = $("#tmp_storage_id").data("classNo");
     $("#main_base_id").load("./html/Lec_Fix_Page.html #fix_div_id", function () {
         $("#classNo_fix").val($("#tmp_storage_id").data("classNo"));
         $("#subject_fix").val($("#tmp_storage_id").data("subject"));
@@ -99,7 +103,7 @@ function Lec_Fix_Button() {
     var sub = $("#subject_fix").val();
     var time = $("#times_fix").val();
     var per = $("#person_fix").val();
-    Lec_Fix(classNo, sub, time, per)
+    Lec_Fix(classNo, sub, time, per, global_oldclassNo)
         .done(function () {
             alert("수정되었습니다!");
             Lec_Search_Href();
@@ -150,7 +154,7 @@ function Lec_Register(classNo, sub, time, per) {
     return deferred.promise();
 }
 
-function Lec_Fix(classNo, sub, time, per) {
+function Lec_Fix(classNo, sub, time, per, oldclassNo) {
     var deferred = $.Deferred();
     $.ajax({
         url: "./WebService/WebService.asmx/Lec_Fix",
@@ -158,7 +162,8 @@ function Lec_Fix(classNo, sub, time, per) {
             classNo: classNo,
             sub: sub,
             time: time,
-            person: per
+            person: per,
+            oldclassNo: oldclassNo
         },
         dataType: "json",
         method: "post",
@@ -179,6 +184,7 @@ function Lec_Fix_Page_Button() {
             $("#tmp_storage_id").data("subject", global_table[i].className);
             $("#tmp_storage_id").data("time", global_table[i].time);
             $("#tmp_storage_id").data("person", global_table[i].proFessor);
+            $("#tmp_")
             global_arry[k] = nom[i].dataset.no;
             k++;
         }
@@ -205,7 +211,7 @@ function Lec_Lea_Class_Lookup() {
         success: function (result) {
             var html = "<option value='' selected disabled>" + "Please select" + "</option>";
             for (No in result.scheduleitems) {
-                html += "<option data-no=" + result.scheduleitems[No].No + ">" + result.scheduleitems[No].className + "</option>";
+                html += "<option data-no=" + result.scheduleitems[No].classNo + ">" + result.scheduleitems[No].className + "</option>";
             }
             $("#lea_class_id").empty();
             $("#lea_class_id").append(html);
@@ -217,8 +223,14 @@ function Lec_Lea_Class_Lookup() {
     });
     return deferred.promise();
 }
+
 var global_selected_classNo;
+
 function Lec_Lea_Class_Select() {
+
+
+    var a = $("#lea_class_id option:selected");
+
     global_selected_classNo = $("#lea_class_id option:selected").data("no");
     Lec_Lea_Lookup(global_selected_classNo);
 }
@@ -228,7 +240,7 @@ function Lec_Lea_Lookup(no) {
     $.ajax({
         url: "./WebService/WebService.asmx/Lec_Lea_Lookup",
         data: {
-            no: no
+            classNo: no
         },
         dataType: "json",
         method: "post",

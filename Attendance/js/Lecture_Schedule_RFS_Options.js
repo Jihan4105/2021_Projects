@@ -41,6 +41,8 @@ function Lec_Schedule_Lookup(classNo) {
             for (No in result.scheduleitems) {
                 html += '<tr>';
                 html += '<td class="row-id">' + '<input id="schedulechk" class="schedulechk" name="schedulechk" type="checkbox" data-no="' + result.scheduleitems[No].classNo + '" data-date="' + result.scheduleitems[No].date + '" data-time="' + result.scheduleitems[No].time + '" data-id="' + result.scheduleitems[No].id + '" onchange="Auto_Inputbox_Edit(this)">' + '</td>';
+                html += '<td>' + result.scheduleitems[No].classNo + '</td>';
+                html += '<td>' + result.scheduleitems[No].className + '</td>';
                 html += '<td>' + result.scheduleitems[No].date + '</td>';
                 html += '<td>' + result.scheduleitems[No].time + '</td>';
                 html += '</tr>';

@@ -25,31 +25,54 @@ namespace Attendance.WebService
         public void Lec_Lookup()
         {
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
-            JArray items = new JArray();
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+
             JObject json = new JObject();
-            string sql = "SELECT classNo, className, proFessor, time, roomNo from class";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            String status = "success";
+            String message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["className"] = rdr["className"].ToString();
-                obj["proFessor"] = rdr["proFessor"].ToString();
-                obj["time"] = rdr["time"].ToString();
-                obj["roomNo"] = rdr["roomNo"].ToString();
-                items.Add(obj);
+                con = new SqlConnection(cs);
+                cmd = new SqlCommand();
+                cmd.Connection = con;
+                con.Open();
+                JArray items = new JArray();
+                string sql = "SELECT classNo, className, proFessor, time, roomNo from class";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["proFessor"] = rdr["proFessor"].ToString();
+                    obj["time"] = rdr["time"].ToString();
+                    obj["roomNo"] = rdr["roomNo"].ToString();
+                    items.Add(obj);
+                }
+                json.Add("items", items);
+
+                con.Close();
             }
-            json.Add("items", items);
+            catch( Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
+
             Context.Response.Write(json.ToString());
-            con.Close();
         }
 
         [WebMethod]
@@ -58,21 +81,39 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            String message = "";
 
-            string sql = "DELETE class where classNo=" + classNo;
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "DELETE class where classNo=" + classNo;
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
+                cmd.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
+
             Context.Response.Write(json.ToString());
-            con.Close();
         }
 
         [WebMethod]
@@ -81,44 +122,79 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "INSERT into class (classNo, className, proFessor, time) " +
-                "values ('"+ classNo +"','" + sub + "', '" + person + "', '" + time + "')";
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "INSERT into class (classNo, className, proFessor, time) " +
+                    "values ('" + classNo + "','" + sub + "', '" + person + "', '" + time + "')";
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
+                cmd.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
+
             Context.Response.Write(json.ToString());
-            con.Close();
         }
 
         [WebMethod]
-        public void Lec_Fix(string classNo, string sub, string time, string person)
+        public void Lec_Fix(string classNo, string sub, string time, string person, string oldclassNo)
         {
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "update class set className= '" + sub + "', time= '" + time + "', proFessor= '" + person + "' where classNo='" + classNo+ "'";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.ExecuteNonQuery();
+                string sql = "update class set classNo='"+ classNo +"', className= '" + sub + "', time= '" + time + "', proFessor= '" + person + "' where classNo='" + oldclassNo + "'";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -127,26 +203,48 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
-            JArray scheduleitems = new JArray();
+
             JObject json = new JObject();
-            string sql = "SELECT classNo, className from class";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            JArray scheduleitems = new JArray();
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["className"] = rdr["className"].ToString();
-                scheduleitems.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "SELECT classNo, className from class";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    scheduleitems.Add(obj);
+                }
+                json.Add("scheduleitems", scheduleitems);
+                
+                con.Close();
             }
-            json.Add("scheduleitems", scheduleitems);
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
+
             Context.Response.Write(json.ToString());
-            con.Close();
         }
 
         [WebMethod]
@@ -155,28 +253,58 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray scheduleitems = new JArray();
             JObject json = new JObject();
-            string sql = "select id, classNo, date, time from classSchedule where classNo='" + classNo +"'";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["id"] = rdr["id"].ToString();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["date"] = rdr["date"].ToString();
-                obj["time"] = rdr["time"].ToString();
-                scheduleitems.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "select " +
+                    "A.id, " +
+                    "A.classNo, " +
+                    "B.className, " +
+                    "A.[date], " +
+                    "B.[time] " +
+                    "from classSchedule as A " +
+                    "   left join class as B " +
+                    "       on A.classNo = B.classNo " +
+                    "where A.classNo ='"+ classNo +"'";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["id"] = rdr["id"].ToString();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["date"] = rdr["date"].ToString();
+                    obj["time"] = rdr["time"].ToString();
+                    scheduleitems.Add(obj);
+                }
+                json.Add("scheduleitems", scheduleitems);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("scheduleitems", scheduleitems);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -185,22 +313,39 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "INSERT into classSchedule (classNo, date, time) " +
-                "values ('" + classNo + "','" + date + "', '" + time + "')";
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "INSERT into classSchedule (classNo, date, time) " +
+                    "values ('" + classNo + "','" + date + "', '" + time + "')";
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -209,21 +354,39 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "update classSchedule set classNo= '" + classNo + "', date= '" + date + "', time= '" + time + "' where id="+ id;
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "update classSchedule set classNo= '" + classNo + "', date= '" + date + "', time= '" + time + "' where id=" + id;
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                json.Add("status", status);
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -232,21 +395,38 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "DELETE classSchedule where id=" + int.Parse(id);
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "DELETE classSchedule where id=" + int.Parse(id);
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
         [WebMethod]
         public void Att_List_Lookup(string classNo, string from_date, string until_date)
@@ -254,43 +434,62 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray att_list = new JArray();
             JObject json = new JObject();
-            string sql = "select " +
-                            "   A.classNo, " +
-                            "   A.className, " +
-                            "   A.professor, " +
-                            "   B.date, " +
-                            "   B.time, " +
-                            "   B.student_name, " +
-                            "   B.att " +
-                            "from class as A " +
-                            "   left join Att_table as B " +
-                            "       on A.classNo = B.classNo " +
-                            "where A.classNo =" + classNo + " and B.date BETWEEN '" + from_date + "' and '" + until_date + "' " +
-                            "order by B.date";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["className"] = rdr["className"].ToString();
-                obj["professor"] = rdr["professor"].ToString();
-                obj["date"] = rdr["date"].ToString();
-                obj["time"] = rdr["time"].ToString();
-                obj["student_name"] = rdr["student_name"].ToString();
-                obj["att"] = rdr["att"].ToString();
-                att_list.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+                string sql = "select " +
+                                "   A.classNo, " +
+                                "   A.className, " +
+                                "   A.professor, " +
+                                "   B.date, " +
+                                "   B.time, " +
+                                "   B.student_name, " +
+                                "   B.att " +
+                                "from class as A " +
+                                "   left join Att_table as B " +
+                                "       on A.classNo = B.classNo " +
+                                "where A.classNo =" + classNo + " and B.date BETWEEN '" + from_date + "' and '" + until_date + "' " +
+                                "order by B.date";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["professor"] = rdr["professor"].ToString();
+                    obj["date"] = rdr["date"].ToString();
+                    obj["time"] = rdr["time"].ToString();
+                    obj["student_name"] = rdr["student_name"].ToString();
+                    obj["att"] = rdr["att"].ToString();
+                    att_list.Add(obj);
+                }
+                json.Add("att_list", att_list);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("att_list", att_list);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -299,22 +498,39 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "INSERT into Stu_Table (stu_name, stu_identity, ph) " +
-                "values ('" + stu_name + "', '" + stu_identity + "', '" + ph + "')";
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "INSERT into Stu_Table (stu_name, stu_identity, ph) " +
+                    "values ('" + stu_name + "', '" + stu_identity + "', '" + ph + "')";
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -323,27 +539,47 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray stu_list = new JArray();
             JObject json = new JObject();
-            string sql = "SELECT stu_name, stu_identity, ph from Stu_Table";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["stu_name"] = rdr["stu_name"].ToString();
-                obj["stu_identity"] = rdr["stu_identity"].ToString();
-                obj["ph"] = rdr["ph"].ToString();
-                stu_list.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "SELECT stu_name, stu_identity, ph from Stu_Table";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["stu_name"] = rdr["stu_name"].ToString();
+                    obj["stu_identity"] = rdr["stu_identity"].ToString();
+                    obj["ph"] = rdr["ph"].ToString();
+                    stu_list.Add(obj);
+                }
+                json.Add("stu_list", stu_list);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("stu_list", stu_list);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -352,21 +588,38 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "DELETE Stu_Table where stu_name='" + stu_name + "'";
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "DELETE Stu_Table where stu_name='" + stu_name + "'";
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -375,20 +628,35 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "update Stu_Table set stu_name= '" + stu_name + "', stu_identity= '" + stu_identity + "', ph= '" + ph + "' where stu_identity='" + global_old_stu_identity + "'";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.ExecuteNonQuery();
+                string sql = "update Stu_Table set stu_name= '" + stu_name + "', stu_identity= '" + stu_identity + "', ph= '" + ph + "' where stu_identity='" + global_old_stu_identity + "'";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch (Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -397,36 +665,56 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray scheduleitems = new JArray();
             JObject json = new JObject();
-            string sql = "select " +
-                         "  B.classNo, " +
-                         "  B.className, " +
-                         "  A.stu_name, " +
-                         "  A.stu_identity " +
-                         "from Learner_Table as A " +
-                         "  left join class as B " +
-                         "      on A.classNo = B.classNo " +
-                         "where B.classNo =" + classNo;
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["className"] = rdr["className"].ToString();
-                obj["stu_name"] = rdr["stu_name"].ToString();
-                obj["stu_identity"] = rdr["stu_identity"].ToString();
-                scheduleitems.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "select " +
+                             "  B.classNo, " +
+                             "  B.className, " +
+                             "  A.stu_name, " +
+                             "  A.stu_identity " +
+                             "from Learner_Table as A " +
+                             "  left join class as B " +
+                             "      on A.classNo = B.classNo " +
+                             "where B.classNo ='" + classNo + "'";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["stu_name"] = rdr["stu_name"].ToString();
+                    obj["stu_identity"] = rdr["stu_identity"].ToString();
+                    scheduleitems.Add(obj);
+                }
+                json.Add("scheduleitems", scheduleitems);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("scheduleitems", scheduleitems);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
         [WebMethod]
         public void Lea_Delete(string stu_name,string classNo)
@@ -434,39 +722,60 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
             string status = "success";
+            string message = "";
 
-            string sql = "DELETE Learner_Table where  stu_name='" + stu_name + "' and classNo=" + classNo;
+            try
+            {
+                cmd.Connection = con;
+                con.Open();
 
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+                string sql = "DELETE Learner_Table where  stu_name='" + stu_name + "' and classNo=" + classNo;
 
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
 
-            json.Add("status", status);
-            Context.Response.Write(json.ToString());
-            con.Close();
+                cmd.ExecuteNonQuery();
+
+                Context.Response.Write(json.ToString());
+                con.Close();
+            }
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
-
 
         [WebMethod]
         public void Popup_List_Push_Learner(string classNo, string arr_obj)
         {
-            JArray arrObj = JArray.Parse(arr_obj);
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlTransaction tran = null;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
+
             cmd.Connection = con;
             con.Open();
             tran = con.BeginTransaction();
+
+            JArray arrObj = JArray.Parse(arr_obj);
             JObject json = new JObject();
             string status = "success";
+            string message = "";
             try
             {
+                cmd.Transaction = tran;
+
                 for (int i = 0; i < arrObj.Count; i++)
                 {
                     string sql = "insert into Learner_Table values('" + classNo + "', '" + arrObj[i]["stu_name"].ToString() + "', '" + arrObj[i]["stu_identity"].ToString() + "')";
@@ -477,18 +786,24 @@ namespace Attendance.WebService
                     cmd.ExecuteNonQuery();
                 }
                 tran.Commit();
+
+                con.Close();
             }
-            catch(Exception) {
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
                 tran.Rollback();
             }
             finally
             {
                 if (con != null) con.Dispose();
                 if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
             }
-            json.Add("status", status);
+
             Context.Response.Write(json.ToString());
-            con.Close();
         }
 
         [WebMethod]
@@ -497,87 +812,124 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray user_list = new JArray();
             JObject json = new JObject();
-            string sql = "SELECT user_name, email, password from Users where email='" + email + "'";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["user_name"] = rdr["user_name"].ToString();
-                obj["email"] = rdr["email"].ToString();
-                obj["password"] = rdr["password"].ToString();
-                user_list.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "SELECT user_name, email, password from Users where email='" + email + "'";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["user_name"] = rdr["user_name"].ToString();
+                    obj["email"] = rdr["email"].ToString();
+                    obj["password"] = rdr["password"].ToString();
+                    user_list.Add(obj);
+                }
+                json.Add("user_list", user_list);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("user_list", user_list);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
         public void Main_Dash_Board(string class_table)
         {
-            JArray classtable = JArray.Parse(class_table);
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JObject json = new JObject();
+            JArray classtable = JArray.Parse(class_table);
             JArray jobj = new JArray();
             string status = "success";
+            string message = "";
 
-            string sql = "CREATE TABLE #tmp( " +
-                         "  className varchar(50), " +
-                         "  result float " +
-                         ") " +
-                         "DECLARE @class_name varchar(50) " +
-                         "DECLARE @total_att float " +
-                         "DECLARE @no_class float " +
-                         "DECLARE @no_classStudent float " +
-                         "DECLARE @result float ";
-            for(int i = 0; i < classtable.Count; i++)
+            try
             {
-                sql += "select @class_name = className from class where classNo=" + classtable[i]["classNo"] + " " +
-                       "select " +
-                       "    @total_att = count(student_name) " +
-                       "from att_table " +
-                       "where classNo =" + classtable[i]["classNo"] + " and att ='Yes' " +
-                       "select " +
-                       "    @no_class = count(distinct date) " +
-                       "from att_table " +
-                       "where classNo=" + classtable[i]["classNo"] + " " +
-                       "select " +
-                       "    @no_classStudent = count(stu_identity) " +
-                       "from learner_table " +
-                       "where classNo=" + classtable[i]["classNo"] + " " +
-                       "set @result = @total_att / (@no_class * @no_classStudent ) * 100 " +
-                       "insert #tmp values (@class_name, @result) ";
+                cmd.Connection = con;
+                con.Open();
+
+                string sql = "CREATE TABLE #tmp( " +
+                             "  className varchar(50), " +
+                             "  result float " +
+                             ") " +
+                             "DECLARE @class_name varchar(50) " +
+                             "DECLARE @total_att float " +
+                             "DECLARE @no_class float " +
+                             "DECLARE @no_classStudent float " +
+                             "DECLARE @result float ";
+                for (int i = 0; i < classtable.Count; i++)
+                {
+                    sql += "select @class_name = className from class where classNo=" + classtable[i]["classNo"] + " " +
+                           "select " +
+                           "    @total_att = count(student_name) " +
+                           "from att_table " +
+                           "where classNo =" + classtable[i]["classNo"] + " and att ='Yes' " +
+                           "select " +
+                           "    @no_class = count(distinct date) " +
+                           "from att_table " +
+                           "where classNo=" + classtable[i]["classNo"] + " " +
+                           "select " +
+                           "    @no_classStudent = count(stu_identity) " +
+                           "from learner_table " +
+                           "where classNo=" + classtable[i]["classNo"] + " " +
+                           "set @result = @total_att / (@no_class * @no_classStudent ) * 100 " +
+                           "insert #tmp values (@class_name, @result) ";
+                }
+                sql += "select * from #tmp";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["result"] = Math.Round(double.Parse(rdr["result"].ToString()));
+                    jobj.Add(obj);
+                }
+
+                json.Add("items", jobj);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            sql += "select * from #tmp";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
-
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            catch (Exception e)
             {
-                JObject obj = new JObject();
-                obj["className"] = rdr["className"].ToString();
-                obj["result"] = Math.Round(double.Parse(rdr["result"].ToString()));
-                jobj.Add(obj);
+                status = "error";
+                message = e.Message;
             }
-
-            json.Add("status", status);
-            json.Add("items", jobj);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -586,37 +938,57 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray dashboard_item = new JArray();
             JObject json = new JObject();
-            string sql = 
-                         "select " +
-                         "  A.classNo, " +
-                         "  A.className, " +
-                         "  A.proFessor, "+
-                         "  stu_num = count(B.stu_identity) " +
-                         "from class as A " +
-                         "  left join Learner_Table as B " +
-                         "      on A.classno = B.classNo " +
-                         "group by A.classNo, A.className, A.proFessor";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["classNo"] = rdr["classNo"].ToString();
-                obj["className"] = rdr["className"].ToString();
-                obj["proFessor"] = rdr["proFessor"].ToString();
-                obj["stu_num"] = rdr["stu_num"].ToString();
-                dashboard_item.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql =
+                             "select " +
+                             "  A.classNo, " +
+                             "  A.className, " +
+                             "  A.proFessor, " +
+                             "  stu_num = count(B.stu_identity) " +
+                             "from class as A " +
+                             "  left join Learner_Table as B " +
+                             "      on A.classno = B.classNo " +
+                             "group by A.classNo, A.className, A.proFessor";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["classNo"] = rdr["classNo"].ToString();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["proFessor"] = rdr["proFessor"].ToString();
+                    obj["stu_num"] = rdr["stu_num"].ToString();
+                    dashboard_item.Add(obj);
+                }
+                json.Add("dashboard_item", dashboard_item);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("dashboard_item", dashboard_item);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch(Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]
@@ -625,36 +997,56 @@ namespace Attendance.WebService
             string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            con.Open();
+
             JArray upping_lecture = new JArray();
             JObject json = new JObject();
-            string sql =
-                         "select " +
-                         "  A.className, " +
-                         "  A.proFessor, " +
-                         "  B.time " +
-                         "from class as A " +
-                         "  left join classSchedule as B " +
-                         "      on A.classNo = B.classNo " +
-                         "Where FORMAT(DATEADD(DAY, 1, GETDATE()), 'yyyy-MM-dd') = B.date " +
-                         "  or FORMAT(GETDATE(), 'yyyy-MM-dd') = B.date ";
-            cmd.CommandText = sql;
-            cmd.CommandType = System.Data.CommandType.Text;
+            string status = "success";
+            string message = "";
 
-            SqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                JObject obj = new JObject();
-                obj["className"] = rdr["className"].ToString();
-                obj["proFessor"] = rdr["proFessor"].ToString();
-                obj["time"] = rdr["time"].ToString();
-                upping_lecture.Add(obj);
+                cmd.Connection = con;
+                con.Open();
+
+                string sql =
+                             "select " +
+                             "  A.className, " +
+                             "  A.proFessor, " +
+                             "  B.time " +
+                             "from class as A " +
+                             "  left join classSchedule as B " +
+                             "      on A.classNo = B.classNo " +
+                             "Where FORMAT(DATEADD(DAY, 1, GETDATE()), 'yyyy-MM-dd') = B.date " +
+                             "  or FORMAT(GETDATE(), 'yyyy-MM-dd') = B.date ";
+                cmd.CommandText = sql;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    JObject obj = new JObject();
+                    obj["className"] = rdr["className"].ToString();
+                    obj["proFessor"] = rdr["proFessor"].ToString();
+                    obj["time"] = rdr["time"].ToString();
+                    upping_lecture.Add(obj);
+                }
+                json.Add("upping_lecture", upping_lecture);
+                Context.Response.Write(json.ToString());
+                con.Close();
             }
-            json.Add("upping_lecture", upping_lecture);
-            Context.Response.Write(json.ToString());
-            con.Close();
+            catch (Exception e)
+            {
+                status = "error";
+                message = e.Message;
+            }
+            finally
+            {
+                if (con != null) con.Dispose();
+                if (cmd != null) cmd.Dispose();
+                json.Add("status", status);
+                json.Add("message", message);
+            }
         }
 
         [WebMethod]

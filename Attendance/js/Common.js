@@ -132,7 +132,7 @@ function PopupOk() {
         }
     }
     if (judge == 1) {
-        alert("삭제할 항목을 선택해 주십시오.");
+        alert("추가할 학생을 선택해주세요.");
         return false;
     }
     Popup_List_Push_Learner(arr)
@@ -155,6 +155,10 @@ function Popup_List_Push_Learner(arr) {
         dataType: "json",
         method: "post",
         success: function (result) {
+            if (result.status == "error") {
+                alert("이미 등록된 수강자가 존재합니다.\n중복된 수강자를 제외하고 다시선택 하세요!");
+                deferred.reject();
+            }
             deferred.resolve(result);
         },
         error: function (result) {

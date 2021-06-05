@@ -3,7 +3,7 @@
     $.ajax({
         url: "./WebService/WebService.asmx/Att_List_Lookup",
         data: {
-            no: no,
+            classNo: no,
             from_date: from_date,
             until_date: until_date
         },
@@ -42,7 +42,7 @@ function Att_Class_Lookup() {
         success: function (result) {
             var html = "<option value='' selected disabled>" + "Please select" + "</option>";
             for (No in result.scheduleitems) {
-                html += "<option data-no=" + result.scheduleitems[No].No + ">" + result.scheduleitems[No].className + "</option>";
+                html += "<option data-no=" + result.scheduleitems[No].classNo + ">" + result.scheduleitems[No].className + "</option>";
             }
             $("#att_class_id").empty();
             $("#att_class_id").append(html);
