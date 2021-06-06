@@ -81,9 +81,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'DevWorld',
-        'USER': 'wlgks6979',
+        'USER': 'postgres',
         'PASSWORD': 'sam031018',
-        'HOST': '127.0.0.1',
+        'HOST': 'jihansdb.cdms98af96ag.ap-northeast-2.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
