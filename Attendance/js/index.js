@@ -45,7 +45,7 @@ function Login() {
             deferred.resolve(result);
         },
         error: function (result) {
-            alert("result");
+            alert(result.message);
             deferred.reject();
         }
     });
