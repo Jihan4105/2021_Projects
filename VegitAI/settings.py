@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'VegitAI.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Vegitable',
-        'USER': 'jihan2',
-        'PASSWORD': 'sam990604',
+        'USER': 'wlgks6979',
+        'PASSWORD': 'sam031018',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

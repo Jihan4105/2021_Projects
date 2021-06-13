@@ -30,14 +30,6 @@
     </div>
     <div class="col-sm-9 mt-4">
         <h4 id="vegitTitle">GreenOnion</h4>
-        <div class="row mt-4">
-            <div class="form-group col-sm-9">
-                <input id="fileUpload" type="file" class="form-control-file border" name="file">
-            </div>
-            <div class="col-sm-3">
-                <button type="submit" class="btn btn-primary " onClick="Training()">Start Training</button>
-            </div>
-        </div>
         <div class="form-group">
             <label for="email">Average temperature:</label>
             <input class="form-control" id="avgTemp" placeholder="평균 기온을 입력해 주십시오" name="email">
@@ -74,14 +66,6 @@
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'Vegit.js' %}"></script>
 <script>
-    var fileName;
-    $(function()
-    {
-        $('#fileUpload').on('change',function (event)
-        {
-            fileName=document.getElementById("fileUpload").files[0].name
-        });
-    });
 
     function predictStart(){
         avgTemp=$("#avgTemp").val();
@@ -117,25 +101,6 @@
         $("#predictPrice").text("0");
     }
     
-    function Training(){
-        $.ajax({
-            url: "{% url 'myapp:training' %}",
-            data: {
-                'vegitTitle': vegitTitle,
-                'fileName': fileName,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            dataType: 'json',
-            method: "post",
-            success: function(result){
-                alert("Training Success");
-                //$("#predictPrice").text(parseInt(result.predictedPrice))
-            },
-            error: function(result){
-                alert("Training Failed");
-            },
-        });
-    }
 </script>
 </body>
 </html>
