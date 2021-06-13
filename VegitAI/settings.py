@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'VegitAI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Vegitable',
-        'USER': 'wlgks6979',
+        'NAME': 'VegitAI',
+        'USER': 'postgres',
         'PASSWORD': 'sam031018',
-        'HOST': '127.0.0.1',
+        'HOST': 'vegitai.cdms98af96ag.ap-northeast-2.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
