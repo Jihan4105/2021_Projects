@@ -11,7 +11,7 @@ export default function SearchTypeAndStatus({setValType, setValStatus}) {
   const [type, setType] = useState({
     plan: true,
     promise: true,
-    canceled: true,
+    duty: true,
   });
 
   const[status, setStatus] = useState({
