@@ -156,7 +156,7 @@ router.get('/search_all', (req, res) => {
             queryText = queryText + "OR status = 'canceled' ";
         }
         else {
-            queryText = queryText + "status = 'canceld' ";
+            queryText = queryText + "status = 'canceled' ";
         }
     }
     queryText = queryText + ") ";
