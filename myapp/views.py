@@ -14,6 +14,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 def predicting(request):
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     vegitTitle = request.POST.get('vegitTitle')
     X = tf.placeholder(tf.float32, shape=[None, 4])
     Y = tf.placeholder(tf.float32, shape=[None, 1])
@@ -30,17 +31,16 @@ def predicting(request):
     max_temp = request.POST.get('maxTemp')
     rain_fall = request.POST.get('rainFall')
 
-    base_dir = getattr(settings, "BASE_DIR", None)
     if vegitTitle=='GreenOnion':
-        save_path = 'D:/PythonProject/VegitAI_Data/'+vegitTitle+'/GreenOnion_saved.cpkt'
+        save_path = root_dir+'/../static/data/'+vegitTitle+'/GreenOnion_saved.cpkt'
     elif vegitTitle=='SweetPotato': 
-        save_path = os.path.join(base_dir, "/SweetPotato_saved.cpkt")
+        save_path = root_dir+'/../static/data/'+vegitTitle+'/SweetPotato_saved.cpkt'
     elif vegitTitle=='garlic': 
-        save_path = os.path.join(base_dir, "/Garlic_saved.cpkt")
+        save_path = root_dir+'/../static/data/'+vegitTitle+'/Garlic_saved.cpkt'
     elif vegitTitle=='chili': 
-        save_path = os.path.join(base_dir, "/Chili_saved.cpkt")
+        save_path = root_dir+'/../static/data/'+vegitTitle+'/Chili_saved.cpkt'
     elif vegitTitle=='onion': 
-        save_path = os.path.join(base_dir, "/Onion_saved.cpkt")
+        save_path = root_dir+'/../static/data/'+vegitTitle+'/Onion_saved.cpkt'
 
 
     with tf.Session() as sess:
