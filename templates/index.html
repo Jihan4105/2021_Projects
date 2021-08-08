@@ -1,0 +1,273 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <!-- community CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <title>Vegit-AI</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="py-3 px-3" style="background-color: #0042ae; color: white;">
+        <h1>Vegit-AI Training</h1>      
+        <p>Veigt-AI predicts vegetable prices when climate data is entered based on climate data and prices over the past decade.</p>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 mt-4">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">GreenOnion</a>
+                <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">SweetPotato</a>
+                <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Onion</a>
+                <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Garlic</a>
+                <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Chili</a>
+            </div>
+        </div>
+        <div class="col-sm-9 mt-4">
+            <h4 id="vegitTitle">GreenOnion</h4>
+            <div class="row mt-4">
+                <div class="col-sm-12 d-flex">
+                    <div class="form-group flex-grow-1 mt-1">
+                        <input id="fileUpload" type="file" class="form-control-file border" name="file">
+                    </div>
+                    <div class="ml-4">
+                        <button type="submit" class="btn btn-primary " onClick="Training()">Start Training</button>
+                    </div>
+                </div>
+            </div>
+            <div class="progress mt-4">
+                <div id="progress_status" class="progress-bar" style="width:0%;"></div> 
+            </div>
+            <div class="row mt-3">
+                <div id="temperature" class="col-sm-6">
+                    
+                </div>
+                <div id="percipitation" class="col-sm-6">
+
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-sm-12"><div id="price" style="width: 100%; "></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row">
+        <div class="col-sm-12 progress mt-4">
+            <div id="progress_status" class="progress-bar" style="width:0%;"></div>
+        </div>
+    </div>   -->
+</div>
+
+<script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'Vegit.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.common.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.light.css" />
+<script src="https://cdn3.devexpress.com/jslib/21.1.5/js/dx.all.js"></script>
+
+<script>
+    var fileName;
+    var datas;
+    var tmpScatter;
+    var rainScatter
+    $(function()
+    {
+        $('#fileUpload').on('change',function (event)
+        {
+            fileName=document.getElementById("fileUpload").files[0].name
+        });
+    });
+    
+    function Training(){
+        var val = setInterval(progress,500);   
+        $.ajax({
+            url: "{% url 'myapp:training' %}",
+            data: {
+                'vegitTitle': vegitTitle,
+                'fileName': fileName,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            dataType: 'json',
+            method: "post",
+            success: function(result){
+                clearInterval(val);
+                $("#progress_status").css("width","100%");
+                alert("Training Success");
+                datas=result.pricedata;
+                tmpScatter=result.tmpScatter;
+                rainScatter=result.rainScatter;
+                console.log(datas);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                console.log(tmpScatter);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                console.log(rainScatter);
+                drawTemperature();
+                drawRainfall();
+                drawPrice();
+            },
+            error: function(result){
+                clearInterval(val);
+                alert("Training Fail");
+            },
+        });
+    }
+
+    function progress(){
+        $.ajax({
+            url: "{% url 'myapp:progressing' %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            dataType: 'json',
+            method: "post",
+            success: function(result){
+                $("#progress_status").css("width",result.progress+"%");
+            },
+            error: function(result){
+                alert("Progress Error!");
+            },
+        });
+    }
+    /*var datass=[
+                {date: "20110101", price: 1234},
+                {date: "20110102", price: 1334},
+                {date: "20110103", price: 1434},
+                {date: "20110104", price: 1534},
+                {date: "20110105", price: 1634},
+                {date: "20110106", price: 1734}
+            ];*/
+    function drawPrice() {
+        $("#price").dxChart({
+            height: "300px",
+            palette: "Violet",
+            dataSource: datas,
+            commonSeriesSettings: {
+                argumentField: "date",
+                type: "line"
+            },
+            valueAxis:{
+                grid:{
+                    visible:false   
+                }
+            },
+            margin: {
+                bottom: 20
+            },
+            argumentAxis: {
+                valueMarginsEnabled: false,
+                discreteAxisDivisionMode: "crossLabels",
+                grid: {
+                    visible: false
+                }
+            },
+            series: [
+                { valueField: "price", name: "Price" }
+            ],
+            legend: {
+                visible: false
+            },
+            title: { 
+                text: "가격변동추이",
+                subtitle: {
+                    text: "2011.01 ~ 2021.03 (1kg기준)"
+                }
+            },
+        });
+    }
+
+    function drawTemperature(){
+        $("#temperature").dxChart({
+            height: "250px",
+            dataSource: tmpScatter,
+            commonSeriesSettings: {
+                type: "scatter"
+            },
+            series: [{ 
+                argumentField: "avgTmp",
+                valueField: "price",
+                point: {
+                    symbol: "circle",
+                    size: 5
+                },
+                color: "green"
+            }],
+            argumentAxis:{
+                grid:{
+                    visible: false
+                },
+                tickInterval: 5,
+                minorGrid: {
+                    visible: false
+                }
+            },
+            valueAxis: {
+                tickInterval: 50,
+                grid:{
+                    visible:false   
+                }
+            },
+            legend: {
+                visible: false
+            },
+            commonPaneSettings: {
+                border:{
+                    visible: true
+                }
+            },
+            title: { 
+                text: "가격-온도 분포"
+            },
+        });
+    }
+
+    function drawRainfall(){
+        $("#percipitation").dxChart({
+            height: "250px",
+            dataSource: rainScatter,
+            commonSeriesSettings: {
+                type: "scatter"
+            },
+            series: [{ 
+                argumentField: "rainFall",
+                valueField: "price",
+                point: {
+                    symbol: "circle",
+                    size: 5
+                }
+            }],
+            argumentAxis:{
+                grid:{
+                    visible: false
+                },
+                tickInterval: 5,
+                minorGrid: {
+                    visible: false
+                }
+            },
+            valueAxis: {
+                tickInterval: 50,
+                grid:{
+                    visible:false   
+                }
+            },
+            legend: {
+                visible: false
+            },
+            commonPaneSettings: {
+                border:{
+                    visible: true
+                }
+            },
+            title: { 
+                text: "가격-강수량 분포"
+            },
+        });
+    }
+</script>
+</body>
+</html>

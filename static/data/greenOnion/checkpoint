@@ -1,0 +1,2 @@
+model_checkpoint_path: "D:\\PythonProject\\VegitAI_Training\\myapp/../static/data/GreenOnion/GreenOnion_saved.cpkt"
+all_model_checkpoint_paths: "D:\\PythonProject\\VegitAI_Training\\myapp/../static/data/GreenOnion/GreenOnion_saved.cpkt"
