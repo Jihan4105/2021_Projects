@@ -17,9 +17,9 @@ function App() {
       <div className="App">
         <MenuBar />
         <Switch>
-          {/* <Route path="/" exact>
+          <Route path="/" exact>
             <Login />
-          </Route>*/}
+          </Route>
           <Route path="/login" exact>
             <Login />
           </Route> 

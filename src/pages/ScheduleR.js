@@ -77,7 +77,7 @@ function ScheduleR() {
 
         let offset =(currentPage - 1 ) * 10;
 
-        axios.get('http://localhost:3001/todolist/search_all', {
+        axios.get('http://localhost:8000/todolist/search_all', {
             params: {
                 mode: "total",
                 offset: offset,
@@ -96,7 +96,7 @@ function ScheduleR() {
             }
             setTotalPage(pageCount);
 
-            axios.get('http://localhost:3001/todolist/search_all', {
+            axios.get('http://localhost:8000/todolist/search_all', {
                 params: {
                     mode: "page",
                     offset: offset,

@@ -70,7 +70,7 @@ export default function ListTableCUD({selectedDate, showSchedule}) { // ... , li
                             key={row.id}
                             onClick={(event) => handleClick(event, row)}
                         >
-                            <TableCell align="center" component="th" scope="row">{row.date}</TableCell>
+                            <TableCell align="center" component="th" scope="row">{row.date} {row.time}</TableCell>
                             <TableCell align="left">{row.title}</TableCell>
                             <TableCell align="center">{row.type}</TableCell>
                             <TableCell align="center">{row.status}</TableCell>

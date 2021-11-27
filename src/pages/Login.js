@@ -15,15 +15,7 @@ export default function Login(id, password) {
   const [loginPassword, setLoginPassword] = useState('');
 
   const handlerLogin = () => {
-    
-    axios.get('http://localhost:3001/todolist/login', {
-      params: {
 
-      }
-    })
-    .then((response) => {
-
-    });
   }
 
   return(
@@ -71,7 +63,7 @@ export default function Login(id, password) {
         </FormControl>
       </div>
       <div style={{ marginTop: "40px", display: "flex", justifyContent: "center"}}>
-        <Button variant="contained" onClick={handlerLogin}>Login</Button>
+        <Button variant="contained" href="http://localhost:3000/list">Login</Button>
       </div>
       <div style={ {marginTop: "40px", display: "flex", justifyContent: "center"}}>
         <p>@The copyright is on Jihan Lee. 2021</p>

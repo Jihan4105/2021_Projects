@@ -160,6 +160,7 @@ export default function ScheduleFormCUD(props) {
                             style={{width: "100%", margin: "20px 0px 0px"}}
                             onChange={onChange}
                             disabled={disabled}
+                            spellCheck={false}
                         />
                     </div>
                     <div style={{margin: "20px 0px 0px"}}>
