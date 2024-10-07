@@ -1,0 +1,80 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <!-- community CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <title>Hello, DevWorld!</title>
+</head>
+<body>
+    <div class="container">
+        <div class="logo row">
+            <div class="title col-sm">DevWorld</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <img src="{% static 'it.png' %}">
+            </div>
+            <div class="col-sm-6">
+                <div class="card-body" style="padding-top: 0px;">
+                    <div class="row">
+                        <div class="col-4">
+                            <h4 style="font-weight: bold;">로그인</h4>
+                        </div>
+                        <div class="col-8 text-right" style="font-size:0.7em; margin-top:30px;">
+                            <span>또는 <a href="{% url 'common:signup' %}">계정을 만드세요.</a></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <form method="post" class="post-form" action="{% url 'common:login' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ next }}">  <!-- 로그인 성공후 이동되는 URL -->
+                                {% include "form_errors.html" %}
+                                <div class="form-group">
+                                    <label for="username">사용자ID</label>
+                                    <input type="text" class="form-control" name="username" id="username"
+                                        value="{{ form.username.value|default_if_none:'' }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">비밀번호</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                        value="{{ form.password.value|default_if_none:'' }}">
+                                </div>
+                                <button type="submit" class="btn btn-primary">로그인</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div>
+                    <h6 style="font-weight: bold;">최근질문</h6>
+                    <hr style="color: darkgray;">
+                </div>
+                <div>
+                    <ul class="list">
+                        <li>Django 가져오기-내보내기 문제 외부 키 필드 가져오기</li>
+                        <li>Django: 앱을 이미 배포했는데 변경하려는 경우 정적 파일을 어떻게 관리합니까?</li>
+                        <li>모델 변경 시 템플릿에 전달된 변수 업데이트</li>
+                        <li>템플릿에서 편집 및 보기를 미디어 파일을 올바르게 구성하는 방법</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6">
+
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div style="font-size: 0.7em;">@Copyright 2020 by JihanLee</div>
+    </div>
+</body>
+</html>

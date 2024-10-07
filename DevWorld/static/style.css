@@ -1,0 +1,46 @@
+.navbar-brand {
+    font-weight: bold;
+    color: white;   
+}
+
+.navbar{
+    background-color: #432874;
+}
+
+.comment {
+    border-top:dotted 1px #ddd;
+    font-size:0.7em;
+}
+
+.nav-link {
+    color: white;    
+}
+
+.thead{
+    background-color: #6f42c1;
+    color: white;
+}
+
+.recommend{
+    background-color: #c5b3e6;
+    color: black;
+}
+
+.title{
+    font-size: 60px;
+    font-weight: bold;
+    margin-top: 20px;
+    color:#432874;
+}
+
+.logo{
+    margin-bottom: 50px;
+}
+
+.list{
+    font-size:0.7em;
+}
+
+.toggler{
+    background-color: #6f42c1;
+}
