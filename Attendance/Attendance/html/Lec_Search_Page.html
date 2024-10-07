@@ -1,0 +1,32 @@
+﻿<div id="search_div_id" class="workarea">
+    <div class="d-flex mb-3">
+        <div class="mr-auto">
+            <div>
+                <span class="sub_title">
+                    강의검색
+                </span>
+            </div>
+        </div>
+        <div>
+            <div>
+                <button type="button" class="btn btn-sm btn-danger" onclick="Lec_Delete_Button()">Delete</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="Lec_Fix_Page_Button()">Update</button>
+            </div>
+        </div>
+    </div>
+    <div id="tablecontents">
+        <table class="table table-sm table-striped">
+            <thead style="background-color: lightgray">
+                <tr>
+                    <th>No.</th>
+                    <th>강의번호</th>
+                    <th>과목</th>
+                    <th>강의시간</th>
+                    <th>강사</th>
+                </tr>
+            </thead>
+            <tbody id="lec_list_id">
+            </tbody>
+        </table>
+    </div>
+</div>
