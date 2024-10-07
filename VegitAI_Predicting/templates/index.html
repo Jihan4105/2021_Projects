@@ -1,0 +1,106 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <!-- community CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <title>Vegit-AI</title>
+</head>
+<body>
+
+<div class="container">
+  <div class="py-3 px-3" style="background-color: #0042ae; color: white;">
+    <h1>Vegit-AI</h1>      
+    <p>Veigt-AI predicts vegetable prices when climate data is entered based on climate data and prices over the past decade.</p>
+  </div>
+  <div class="row">
+    <div class="col-sm-3 mt-4">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">GreenOnion</a>
+            <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">SweetPotato</a>
+            <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Onion</a>
+            <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Garlic</a>
+            <a href="#" class="list-group-item list-group-item-action font-weight-bold" style="background-color: #f1f3f4;" onClick="initDataform(event)">Chili</a>
+        </div>
+    </div>
+    <div class="col-sm-9 mt-4">
+        <h4 id="vegitTitle">GreenOnion</h4>
+        <div class="form-group">
+            <label for="email">Average temperature:</label>
+            <input class="form-control" id="avgTemp" placeholder="평균 기온을 입력해 주십시오" name="email">
+        </div>
+        <div class="form-group">
+            <label for="pwd">최저 기온:</label>
+            <input class="form-control" id="minTemp" placeholder="최저 기온을 입력해 주십시오" name="pswd">
+        </div>
+        <div class="form-group">
+            <label for="pwd">최고 기온</label>
+            <input class="form-control" id="maxTemp" placeholder="최고 기온을 입력해 주십시오" name="pswd">
+        </div>
+        <div class="form-group">
+            <label for="pwd">강수량</label>
+            <input class="form-control" id="rainFall" placeholder="강수량을 입력해 주십시오" name="pswd">
+        </div>  
+        <div class="d-flex justify-content-center mb-3">
+            <div class="p-2"><button type="submit" class="btn btn-primary " onClick="predictStart();">Submit</button></div>
+            <div class="p-2"><button class="btn btn-primary " onClick="resetInput();">Reset</button></div>
+        </div>
+        <div class="mt-3">
+            <label class="font-weight-bold" for="pwd">예측 가격</label>
+            <!--<input  class="form-control" id="predictPrice" placeholder="대파1kg 의 값이 출력됩니다!" name="pswd" readonly>-->
+            <div class="d-flex">
+                <div><h2>&#8361</h2></div>
+                <div><h2 id="predictPrice">0</h2></div>
+            </div>
+        </div>
+    </div>
+  </div>     
+</div>
+
+<script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'Vegit.js' %}"></script>
+<script>
+
+    function predictStart(){
+        avgTemp=$("#avgTemp").val();
+        minTemp=$("#minTemp").val();
+        maxTemp=$("#maxTemp").val();
+        rainFall=$("#rainFall").val();
+        $.ajax({
+            url: "{% url 'myapp:predicting' %}",
+            data: {
+                'vegitTitle': vegitTitle,
+                'avgTemp': avgTemp,
+                'minTemp': minTemp,
+                'maxTemp': maxTemp,
+                'rainFall': rainFall,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            dataType: 'json',
+            method: "post",
+            success: function(result){
+                $("#predictPrice").text(parseInt(result.predictedPrice))
+            },
+            error: function(result){
+                alert("Error");
+            },
+        });
+    }
+
+    function resetInput(){
+        $("#avgTemp").val("");
+        $("#minTemp").val("");
+        $("#maxTemp").val("");
+        $("#rainFall").val("");
+        $("#predictPrice").text("0");
+    }
+    
+</script>
+</body>
+</html>
